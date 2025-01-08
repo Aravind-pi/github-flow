@@ -4,7 +4,6 @@ on: push
 jobs:
     build-stage:
         name: build-job
-        needs: test-stage
         runs-on: ubuntu-latest
         steps:
             - name: Checkout Repo
@@ -20,7 +19,7 @@ jobs:
                 path: dragon.txt
     test-stage:
         name: test-job
-        needs: deploy-stage
+        needs: build-stage
         runs-on: ubuntu-latest
         steps:
             - name: Download Build Artifacts
@@ -31,6 +30,7 @@ jobs:
               run: grep -i "dragon" dragon.txt
     deploy-stage:
         name: deploy-job
+        needs: test-stage
         runs-on: ubuntu-latest
         steps:
             - name: Download Build Artifacts
