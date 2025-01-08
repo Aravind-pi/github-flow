@@ -5,6 +5,8 @@ jobs:
         name: read files
         runs-on: ubuntu-latest
         steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v4
             - name: display text
               run: echo "Hey! My first task in Github Actions"
             - name: list the directory
