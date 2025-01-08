@@ -1,0 +1,43 @@
+name: Multi Stage Jobs
+on: push
+
+jobs:
+    build-stage:
+        name: build-job
+        needs: test-stage
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v4
+            - name: Install Cowsay
+              run: |
+                sudo apt-get install cowsay -y
+                cowsay -f dragon "Dragon created" >> dragon.txt
+            - name: Upload Build Artifact
+              uses: actions/upload-artifact@v4
+              with:
+                name: dragon
+                path: dragon.txt
+    test-stage:
+        name: test-job
+        needs: deploy-stage
+        runs-on: ubuntu-latest
+        steps:
+            - name: Download Build Artifacts
+              uses: actions/download-artifact@v4
+              with:
+                name: dragon
+            - name: Search the dragon file
+              run: grep -i "dragon" dragon.txt
+    deploy-stage:
+        name: deploy-job
+        runs-on: ubuntu-latest
+        steps:
+            - name: Download Build Artifacts
+              uses: actions/download-artifact@v4
+              with:
+                name: dragon
+            - name: Display the Dragon file
+              run: cat dragon.txt
+
+
